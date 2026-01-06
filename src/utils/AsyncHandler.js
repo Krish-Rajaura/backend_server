@@ -1,7 +1,7 @@
 import express from "express"
 import mongoose from "mongoose"
 
-// const AsynHandler=(fn)=async(req,res,next)=>{
+// const AsyncHandler=(fn)=async(req,res,next)=>{
 //     try{
 //         const MongoDBConnector= await fn(res,req,next);
 
@@ -13,10 +13,10 @@ import mongoose from "mongoose"
 //     }
 // }
 
-const AsynHandler=(fn)=>{
-    (req,res,next)=>{
+const AsyncHandler=(fn)=>{
+    return (req,res,next)=>{
         Promise.resolve(fn(req,res,next)).catch((error)=>next(error))
     }
 }
 
-export {AsynHandler}
+export {AsyncHandler}
