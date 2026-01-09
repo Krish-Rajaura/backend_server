@@ -5,6 +5,9 @@ import {ApiResponse} from '../utils/ApiResponse.js'
 import { UploadOnCloudinary } from '../utils/cloudinary.js'
 
 
+
+
+
 const registerUser= AsyncHandler(async (req,res)=>{
 
     //take User details
@@ -26,16 +29,14 @@ const registerUser= AsyncHandler(async (req,res)=>{
 
 
     // check for image and avatar
-
-    const avatarLocalPath=req.files?.avatar[0]?.path;
+    console.log(req.files);
+    const avatarLocalPath=req.files?.avatar?.[0]?.path;
     if(!avatarLocalPath){
         throw new ApiError(400,"Avatar file required")
     } 
 
-    const coverImagePath=req.files?.coverImage[0]?.path;
-    if(!coverImagePath){
-        throw new ApiError(400,"Cover image file required")
-    }
+    const coverImagePath=req.files?.coverImage?.[0]?.path;
+    
 
 
     //upload image and avatar to cloudinary
@@ -49,12 +50,11 @@ const registerUser= AsyncHandler(async (req,res)=>{
         coverImage:coverImage?.url||"",
         username:username.toLowerCase(),
         email,
-        password,
-        refreshTokens
+        password
     })
 
-    const createdUser=User.findById(user._id).select(
-        "-password refreshTokens"
+    const createdUser= await User.findById(user._id).select(
+        "-password -refreshTokens"
     )
 
     //check User is created
@@ -69,5 +69,7 @@ const registerUser= AsyncHandler(async (req,res)=>{
         new ApiResponse(200,createdUser,"user registered successfully")
     )
 })
+
+
 
 export default registerUser;
